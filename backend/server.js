@@ -50,7 +50,7 @@ app.get('/test-db', async (req, res) => {
 
 app.post('/api/restore-db', async (req, res) => {
   try {
-      const sqlFilePath = path.join(__dirname, 'backup.sql');
+      const sqlFilePath = path.join(__dirname, 'backup_plain.sql');
       const sqlQuery = fs.readFileSync(sqlFilePath, 'utf8');
 
       await sequelize.query(sqlQuery);
