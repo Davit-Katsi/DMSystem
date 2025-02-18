@@ -6,6 +6,8 @@ const registrationRoutes = require('./routes/registrationRoutes');  // Import Re
 const dashboardRoutes = require('./routes/dashboardRoutes');
 require('dotenv').config();
 const googleApiKey = process.env.GOOGLE_MAPS_API_KEY;
+const fs = require('fs');
+const path = require('path');
 
 const PORT = process.env.PORT || 5000;
 
@@ -43,5 +45,19 @@ app.get('/test-db', async (req, res) => {
     res.send("Database connection successful! 🎉");
   } catch (error) {
     res.status(500).send("Database connection failed: " + error.message);
+  }
+});
+
+app.post('/api/restore-db', async (req, res) => {
+  try {
+      const sqlFilePath = path.join(__dirname, 'backup.sql');
+      const sqlQuery = fs.readFileSync(sqlFilePath, 'utf8');
+
+      await sequelize.query(sqlQuery);
+
+      res.status(200).json({ message: 'Database restored successfully!' });
+  } catch (error) {
+      console.error('Error restoring database:', error);
+      res.status(500).json({ error: 'Database restore failed' });
   }
 });
