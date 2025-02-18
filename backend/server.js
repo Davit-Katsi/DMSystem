@@ -36,3 +36,12 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+app.get('/test-db', async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    res.send("Database connection successful! 🎉");
+  } catch (error) {
+    res.status(500).send("Database connection failed: " + error.message);
+  }
+});
