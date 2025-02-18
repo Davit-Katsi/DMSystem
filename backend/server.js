@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const sequelize = require('./db'); // Ensure this is pointing to db.js
+const sequelize = require('./models/db'); // Correct path to `db.js`
 const registrationRoutes = require('./routes/registrationRoutes');  // Import Registration Routes
 const dashboardRoutes = require('./routes/dashboardRoutes');
 require('dotenv').config();
