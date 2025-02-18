@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: driver-management-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        value: "postgresql://driver_management_db_user:EYLiC8nqAhfFUypvuGmPzXFiCDiu7dwX@dpg-cuqf4tij1k6c73e4c0s0-a/driver_management_db"
+      - key: PORT
+        value: "5000"
+      - key: JWT_SECRET
+        value: "mySuperSecretKey12345"
+      - key: NPM_CONFIG_PRODUCTION
+        value: "false"
