@@ -1,6 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../models/db');
-const bcrypt = require('bcrypt');  // Import bcrypt for hashing
+const bcrypt = require('bcryptjs');  // Import bcrypt for hashing
 
 const User = sequelize.define('User', {
   username: {
