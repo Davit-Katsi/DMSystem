@@ -149,74 +149,91 @@ exports.searchDrivers = async (req, res) => {
 
 // Mock implementation for finding closest drivers
 exports.getClosestDrivers = async (req, res) => {
-  const { zip_code, availability, page = 1, limit = 10 } = req.query;
+    const { zip_code, availability, page = 1, limit = 10 } = req.query;
 
-  if (!zip_code) {
-      return res.status(400).json({ error: "ZIP code is required" });
-  }
+    if (!zip_code) {
+        return res.status(400).json({ error: "ZIP code is required" });
+    }
 
-  try {
-      const whereClause = { zip_code: { [Op.ne]: null } };
+    console.log("🔍 Searching for nearest drivers from ZIP:", zip_code);
 
-      if (availability?.trim()) {
-          whereClause.availability = availability;  // ✅ Filter by availability if provided
-      }
+    try {
+        const whereClause = { zip_code: { [Op.ne]: null } };
 
-      const offset = (page - 1) * limit;
+        if (availability?.trim()) {
+            whereClause.availability = availability;  // ✅ Filter by availability if provided
+        }
 
-      const drivers = await DriverProfile.findAll({
-        attributes: ['id', 'name', 'phone_number', 'unit_number', 'zip_code', 'availability'],
-        where: whereClause,
-        limit: parseInt(limit),
-        offset: parseInt(offset),
-        include: [{ model: Vehicle, as: 'vehicle', attributes: ['type'] }]  // ✅ Ensure Vehicle Type is always included
-    });    
+        const offset = (page - 1) * limit;
 
-      if (drivers.length === 0) {
-          return res.status(404).json({ error: "No drivers with valid ZIP codes found." });
-      }
+        const drivers = await DriverProfile.findAll({
+            attributes: ['id', 'name', 'phone_number', 'unit_number', 'zip_code', 'availability'],
+            where: whereClause,
+            limit: parseInt(limit),
+            offset: parseInt(offset),
+            include: [{ model: Vehicle, as: 'vehicle', attributes: ['type'] }]  // ✅ Ensure Vehicle Type is always included
+        });
 
-      const driverZipCodes = drivers.map(driver => driver.zip_code).join('|');
-      const googleApiKey = process.env.GOOGLE_MAPS_API_KEY;
-      const googleApiUrl = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${zip_code}&destinations=${driverZipCodes}&key=${googleApiKey}`;
+        console.log("📌 Found Drivers:", drivers.map(d => ({ id: d.id, zip: d.zip_code })));
 
-      const response = await axios.get(googleApiUrl);
-      if (!response.data.rows || !response.data.rows[0]) {
-          return res.status(500).json({ error: "Google API did not return valid data." });
-      }
+        if (drivers.length === 0) {
+            return res.status(404).json({ error: "No drivers with valid ZIP codes found." });
+        }
 
-      const distanceData = response.data.rows[0].elements;
+        // ✅ Validate Google Maps API Key
+        if (!process.env.GOOGLE_MAPS_API_KEY) {
+            return res.status(500).json({ error: "Google Maps API Key is missing!" });
+        }
 
-      const driversWithDistance = drivers.map((driver, index) => {
-          const rawDistance = distanceData[index]?.status === "OK" ? distanceData[index].distance.text : "N/A";
-          let distanceInMiles = rawDistance.includes("km")
-              ? (parseFloat(rawDistance.replace(/[^0-9.]/g, '')) * 0.621371).toFixed(1) + " mi"
-              : rawDistance; 
+        // ✅ Prepare Google Maps API Request
+        const driverZipCodes = drivers.map(driver => driver.zip_code).join('|');
+        const googleApiUrl = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${zip_code}&destinations=${driverZipCodes}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
 
-          return {
-              ...driver.toJSON(),
-              distance: distanceInMiles
-          };
-      });
+        console.log("🔗 Google Maps API Request:", googleApiUrl);
 
-      const sortedDrivers = driversWithDistance.sort((a, b) => {
-          const distanceA = parseFloat(a.distance.replace(/[^0-9.]/g, '')) || Infinity;
-          const distanceB = parseFloat(b.distance.replace(/[^0-9.]/g, '')) || Infinity;
-          return distanceA - distanceB;
-      });
+        // ✅ Fetch Distance Data
+        const response = await axios.get(googleApiUrl);
 
-      res.status(200).json({
-          drivers: sortedDrivers.slice(0, limit),
-          totalDrivers: drivers.length,
-          totalPages: Math.ceil(drivers.length / limit),
-          currentPage: parseInt(page)
-      });
+        if (!response.data.rows || !response.data.rows[0]) {
+            console.error("❌ Google API Error:", response.data);
+            return res.status(500).json({ error: "Google API did not return valid data." });
+        }
 
-  } catch (error) {
-      console.error("Error fetching nearest drivers:", error);
-      res.status(500).json({ error: "Failed to fetch nearest drivers" });
-  }
+        // ✅ Process Distance Data
+        const distanceData = response.data.rows[0].elements;
+
+        const driversWithDistance = drivers.map((driver, index) => {
+            const rawDistance = distanceData[index]?.status === "OK" ? distanceData[index].distance.text : "N/A";
+            let distanceInMiles = rawDistance.includes("km")
+                ? (parseFloat(rawDistance.replace(/[^0-9.]/g, '')) * 0.621371).toFixed(1) + " mi"
+                : rawDistance;
+
+            return {
+                ...driver.toJSON(),
+                distance: distanceInMiles
+            };
+        });
+
+        // ✅ Sort Drivers by Distance
+        const sortedDrivers = driversWithDistance.sort((a, b) => {
+            const distanceA = parseFloat(a.distance.replace(/[^0-9.]/g, '')) || Infinity;
+            const distanceB = parseFloat(b.distance.replace(/[^0-9.]/g, '')) || Infinity;
+            return distanceA - distanceB;
+        });
+
+        res.status(200).json({
+            drivers: sortedDrivers.slice(0, limit),
+            totalDrivers: drivers.length,
+            totalPages: Math.ceil(drivers.length / limit),
+            currentPage: parseInt(page)
+        });
+
+    } catch (error) {
+        console.error("❌ Error fetching nearest drivers:", error);
+        res.status(500).json({ error: "Failed to fetch nearest drivers" });
+    }
 };
+
 
 exports.deleteDriver = async (req, res) => {
   const driverId = req.params.id;
