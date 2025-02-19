@@ -8,6 +8,7 @@ require('dotenv').config();
 const googleApiKey = process.env.GOOGLE_MAPS_API_KEY;
 const fs = require('fs');
 const path = require('path');
+const { exec } = require('child_process');
 
 const PORT = process.env.PORT || 5000;
 
@@ -50,14 +51,24 @@ app.get('/test-db', async (req, res) => {
 
 app.post('/api/restore-db', async (req, res) => {
   try {
-      const sqlFilePath = path.join(__dirname, 'backup_plain.sql');
-      const sqlQuery = fs.readFileSync(sqlFilePath, 'utf8');
+      const sqlFilePath = path.join(__dirname, 'backup_plain.sql'); // Make sure this file exists
+      const databaseURL = process.env.DATABASE_URL; // Use the DATABASE_URL from environment variables
 
-      await sequelize.query(sqlQuery);
+      // Construct the psql command
+      const command = `PGPASSWORD=${process.env.DB_PASSWORD} psql "${databaseURL}" -f "${sqlFilePath}"`;
 
-      res.status(200).json({ message: 'Database restored successfully!' });
+      // Execute the command
+      exec(command, (error, stdout, stderr) => {
+          if (error) {
+              console.error(`Error restoring database: ${stderr}`);
+              return res.status(500).json({ error: 'Database restore failed', details: stderr });
+          }
+          console.log(`Database restored: ${stdout}`);
+          res.status(200).json({ message: 'Database restored successfully!' });
+      });
+
   } catch (error) {
       console.error('Error restoring database:', error);
-      res.status(500).json({ error: 'Database restore failed' });
+      res.status(500).json({ error: 'Database restore failed', details: error.message });
   }
 });
