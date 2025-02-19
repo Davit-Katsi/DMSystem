@@ -6,29 +6,38 @@ import { useAuth } from '../context/AuthContext';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');  // State for error messages
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleLogin = async () => {
-    setErrorMessage('');  // Clear previous errors
+  const handleLogin = async (e) => {
+    e.preventDefault(); // ✅ Prevent form from refreshing
+    setErrorMessage(''); // ✅ Clear previous errors
+
     try {
-      const response = await axios.post('https://driver-management-backend-3chl.onrender.com/api/auth/login', { email, password });
+      const response = await axios.post(
+        'https://driver-management-backend-3chl.onrender.com/api/auth/login',
+        { email, password }
+      );
 
       const token = response.data.token;
+      if (!token) {
+        throw new Error("No token received");
+      }
+
+      sessionStorage.setItem("authToken", token); // ✅ Store token in sessionStorage
       const userPayload = JSON.parse(atob(token.split('.')[1]));
-      login({ 
-        token, 
-        role: userPayload.role, 
-        username: userPayload.username  // Include username in the auth context
+      login({
+        token,
+        role: userPayload.role,
+        username: userPayload.username,
       });
 
-      navigate('/');
+      navigate('/dashboard'); // ✅ Redirect to dashboard on successful login
     } catch (error) {
       console.error('Login failed:', error.response?.data?.error || 'Login error');
       
       if (error.response) {
-        // Handle specific error responses from the server
         if (error.response.status === 404) {
           setErrorMessage('User not found. Please check your email.');
         } else if (error.response.status === 401) {
@@ -43,45 +52,50 @@ const Login = () => {
   };
 
   return (
-    <div className="max-w-sm mx-auto p-6 bg-background rounded-lg shadow-md mt-10">
+    <div className="max-w-sm mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
       <h2 className="text-2xl font-bold mb-4">Login</h2>
 
       {/* Display Error Message */}
       {errorMessage && (
-        <div className="mb-4 p-2 bg-danger text-white rounded">
+        <div className="mb-4 p-2 bg-red-500 text-white rounded">
           {errorMessage}
         </div>
       )}
 
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="w-full p-2 border rounded mb-4"
-      />
+      <form onSubmit={handleLogin}> {/* ✅ Wrap in form to trigger on submit */}
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full p-2 border rounded mb-4"
+          required
+        />
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="w-full p-2 border rounded mb-4"
-      />
-      <button
-        onClick={handleLogin}
-        className="w-full bg-primary text-white py-2 rounded hover:bg-secondary"
-      >
-        Login
-      </button>
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full p-2 border rounded mb-4"
+          required
+        />
 
-    {/* Reset Password Link */}
-    <div className="mt-4 text-center">
-    <Link to="/request-password-reset" className="text-secondary hover:underline">
-      Forgot Password?
-    </Link>
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+        >
+          Login
+        </button>
+      </form>
+
+      {/* Reset Password Link */}
+      <div className="mt-4 text-center">
+        <Link to="/request-password-reset" className="text-blue-500 hover:underline">
+          Forgot Password?
+        </Link>
+      </div>
     </div>
-  </div>
   );
 };
 
