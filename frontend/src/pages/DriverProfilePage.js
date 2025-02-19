@@ -13,7 +13,7 @@ const DriverProfilePage = () => {
   const fetchDriverProfile = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:5000/api/drivers/${id}`, {
+      const response = await axios.get(`http://https://driver-management-backend-3chl.onrender.com/api/drivers/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -39,7 +39,7 @@ const DriverProfilePage = () => {
     if (window.confirm('Are you sure you want to delete this driver? This action cannot be undone.')) {
       try {
         const token = localStorage.getItem('token');
-        await axios.delete(`http://localhost:5000/api/drivers/${driverId}`, {
+        await axios.delete(`http://https://driver-management-backend-3chl.onrender.com/api/drivers/${driverId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

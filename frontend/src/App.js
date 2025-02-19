@@ -24,7 +24,7 @@ function App() {
     const fetchStats = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:5000/api/drivers/stats', {
+        const response = await axios.get('http://https://driver-management-backend-3chl.onrender.com/api/drivers/stats', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setStats(response.data);

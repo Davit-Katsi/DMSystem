@@ -21,7 +21,7 @@ const AdminUserManagement = () => {
         return;
       }
 
-      const response = await axios.get('http://localhost:5000/api/users', {
+      const response = await axios.get('http://https://driver-management-backend-3chl.onrender.com/api/users', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -44,7 +44,7 @@ const AdminUserManagement = () => {
   const handleAddUser = async () => {
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/users', newUser, {
+      await axios.post('http://https://driver-management-backend-3chl.onrender.com/api/users', newUser, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSuccessMessage('User added successfully!');
@@ -74,7 +74,7 @@ const AdminUserManagement = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/users/${userId}`, {
+      await axios.delete(`http://https://driver-management-backend-3chl.onrender.com/api/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSuccessMessage('User deleted successfully!');
@@ -99,7 +99,7 @@ const AdminUserManagement = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:5000/api/users/${editUserId}`, { role: editedRole }, {
+      await axios.put(`http://https://driver-management-backend-3chl.onrender.com/api/users/${editUserId}`, { role: editedRole }, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSuccessMessage('User role updated successfully!');

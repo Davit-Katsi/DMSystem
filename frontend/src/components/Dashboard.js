@@ -53,7 +53,7 @@ const Dashboard = () => {
   const fetchLatestDrivers = async (page = 1) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:5000/api/drivers/latest?page=${page}&limit=${driversPerPage}`, {
+      const response = await axios.get(`http://https://driver-management-backend-3chl.onrender.com/api/drivers/latest?page=${page}&limit=${driversPerPage}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setDrivers(response.data.drivers);  // Make sure to set the drivers array
@@ -67,7 +67,7 @@ const Dashboard = () => {
   const fetchStats = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/drivers/stats', {
+      const response = await axios.get('http://https://driver-management-backend-3chl.onrender.com/api/drivers/stats', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setStats(response.data);
@@ -85,7 +85,7 @@ const Dashboard = () => {
   const handleDownloadBackup = async () => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:5000/api/backup/download', { // ✅ Ensure backend URL is correct
+        const response = await axios.get('http://https://driver-management-backend-3chl.onrender.com/api/backup/download', { // ✅ Ensure backend URL is correct
             headers: { Authorization: `Bearer ${token}` },
             responseType: 'blob',
         });
@@ -119,7 +119,7 @@ const Dashboard = () => {
 
     try {
         const token = localStorage.getItem("token");
-        await axios.post("http://localhost:5000/api/backup/upload", formData, {
+        await axios.post("http://https://driver-management-backend-3chl.onrender.com/api/backup/upload", formData, {
             headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
         });
 
@@ -137,7 +137,7 @@ const Dashboard = () => {
 const handleExportToExcel = async () => {
   try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:5000/api/backup/download", {
+      const response = await axios.get("http://https://driver-management-backend-3chl.onrender.com/api/backup/download", {
           headers: { Authorization: `Bearer ${token}` },
           responseType: "json",
       });
@@ -204,7 +204,7 @@ const handleExportToExcel = async () => {
 
         if (searchParams.zipCode?.trim()) {
             // ✅ Fix: Include `availability` when searching by ZIP Code
-            response = await axios.get(`http://localhost:5000/api/drivers/closest`, {
+            response = await axios.get(`http://https://driver-management-backend-3chl.onrender.com/api/drivers/closest`, {
                 headers: { Authorization: `Bearer ${token}` },
                 params: {
                     zip_code: searchParams.zipCode,
@@ -214,7 +214,7 @@ const handleExportToExcel = async () => {
             });
             setIsNearestSearch(true);
         } else {
-            response = await axios.get("http://localhost:5000/api/drivers/search", {
+            response = await axios.get("http://https://driver-management-backend-3chl.onrender.com/api/drivers/search", {
                 headers: { Authorization: `Bearer ${token}` },
                 params: {
                     unit_number: searchParams.unitNumber || undefined,
@@ -261,7 +261,7 @@ const handleExportToExcel = async () => {
         const token = localStorage.getItem("token");
 
         if (isNearestSearch) {
-            const response = await axios.get(`http://localhost:5000/api/drivers/closest`, {
+            const response = await axios.get(`http://https://driver-management-backend-3chl.onrender.com/api/drivers/closest`, {
                 headers: { Authorization: `Bearer ${token}` },
                 params: {
                     zip_code: searchParams.zipCode,

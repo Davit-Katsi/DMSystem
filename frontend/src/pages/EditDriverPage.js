@@ -39,7 +39,7 @@ const EditDriverPage = () => {
   const fetchDriverData = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:5000/api/drivers/${id}`, {
+      const response = await axios.get(`http://https://driver-management-backend-3chl.onrender.com/api/drivers/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const driverData = response.data;
@@ -104,7 +104,7 @@ const EditDriverPage = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:5000/api/drivers/${id}`, formData, {
+      await axios.put(`http://https://driver-management-backend-3chl.onrender.com/api/drivers/${id}`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

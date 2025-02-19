@@ -28,7 +28,7 @@ const UpdateStatusPage = () => {
     setLoading(true); // ✅ Start loading
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:5000/api/drivers/all', {
+        const response = await axios.get('http://https://driver-management-backend-3chl.onrender.com/api/drivers/all', {
             headers: { Authorization: `Bearer ${token}` },
         });
         setDrivers(response.data.drivers);
@@ -84,7 +84,7 @@ const saveDriverUpdate = async (driverId) => {
 
   try {
       const token = localStorage.getItem('token');
-      const response = await axios.put(`http://localhost:5000/api/drivers/${driverId}`, updatedData, {
+      const response = await axios.put(`http://https://driver-management-backend-3chl.onrender.com/api/drivers/${driverId}`, updatedData, {
           headers: { Authorization: `Bearer ${token}` },
       });
 

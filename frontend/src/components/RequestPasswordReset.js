@@ -10,7 +10,7 @@ const RequestPasswordReset = () => {
 
   const handleRequestReset = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/users/request-password-reset', { email });
+      const response = await axios.post('http://https://driver-management-backend-3chl.onrender.com/api/users/request-password-reset', { email });
       setMessage(response.data.message);
       setError('');
     } catch (error) {
