@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import axios from 'axios';
 import Dashboard from './components/Dashboard';
 import DriverRegistrationForm from './components/DriverRegistrationForm';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './components/Login';
 import AdminUserManagement from './components/AdminUserManagement';
 import RequestPasswordReset from './components/RequestPasswordReset';
@@ -19,40 +19,37 @@ function App() {
     onDutyDrivers: 0
   });
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { user } = useAuth();
+  const isAuthenticated = !!user; // ✅ Checks if user is authenticated
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const token = sessionStorage.getItem('authToken'); // ✅ Use sessionStorage instead of localStorage
-        if (!token) {
-          setIsAuthenticated(false);
-          return;
-        }
+        const token = sessionStorage.getItem('authToken'); // ✅ Use sessionStorage
+        if (!token) return;
 
-        const response = await axios.get('https://driver-management-backend-3chl.onrender.com/api/drivers/stats', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await axios.get(
+          'https://driver-management-backend-3chl.onrender.com/api/drivers/stats',
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
 
         setStats(response.data);
-        setIsAuthenticated(true);
       } catch (error) {
         console.error('Error fetching stats:', error);
-        setIsAuthenticated(false); // Ensure the user is logged out if an error occurs
       }
     };
 
     fetchStats();
-  }, []);
+  }, [isAuthenticated]);
 
   return (
     <AuthProvider>
       <Router>
         <div className="min-h-screen bg-gray-100 p-4">
           <Routes>
-            {/* ✅ Always start at login if not authenticated */}
-            <Route path="/" element={isAuthenticated ? <Dashboard stats={stats} /> : <Navigate to="/login" />} />
-            <Route path="/login" element={<Login />} />
+            {/* ✅ Ensure login is required before accessing pages */}
+            <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
+            <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" />} />
             <Route path="/dashboard" element={isAuthenticated ? <Dashboard stats={stats} /> : <Navigate to="/login" />} />
             <Route path="/add-driver" element={isAuthenticated ? <DriverRegistrationForm /> : <Navigate to="/login" />} />
             <Route path="/user-management" element={isAuthenticated ? <AdminUserManagement /> : <Navigate to="/login" />} />

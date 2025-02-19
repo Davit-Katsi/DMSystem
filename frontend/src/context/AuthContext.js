@@ -6,23 +6,32 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   const login = (userData) => {
-    console.log("User data on login:", userData);
-    setUser(userData);  // Store user info in state
-    localStorage.setItem('token', userData.token);  // Save token in localStorage
+    console.log("✅ User logged in:", userData);
+    setUser(userData);
+    sessionStorage.setItem('token', userData.token);  // ✅ Store token in sessionStorage instead of localStorage
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
-      const userPayload = JSON.parse(atob(token.split('.')[1]));
-      console.log("User data on refresh:", userPayload);  // Debug: Check user data after refresh
-      setUser(userPayload);
+      const decodedPayload = JSON.parse(atob(token.split('.')[1]));
+
+      // ✅ Check if token has expired
+      if (decodedPayload.exp * 1000 < Date.now()) {
+        console.log("⚠ Token expired. Logging out...");
+        logout();
+        return;
+      }
+
+      console.log("🔄 Restoring session for:", decodedPayload);
+      setUser(decodedPayload);
     }
   }, []);
 
   const logout = () => {
+    console.log("🚪 User logged out");
     setUser(null);
-    localStorage.removeItem('token');  // Clear token on logout
+    sessionStorage.removeItem('token');  // ✅ Clear sessionStorage on logout
   };
 
   return (
