@@ -8,7 +8,7 @@ const fs = require('fs');
 // Find the 10 closest drivers to a given zip code (mock implementation)
 exports.getLatestDrivers = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;  // Ensure consistent pagination limit
+  const limit = parseInt(req.query.limit) || 20;  // Ensure consistent pagination limit
   const offset = (page - 1) * limit;
   const { date, sortBy } = req.query; // ✅ Get `sortBy` parameter
   
