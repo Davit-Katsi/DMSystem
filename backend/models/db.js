@@ -1,30 +1,21 @@
-const { Sequelize } = require('sequelize');
-const config = require('../config/config');
+const { Sequelize } = require("sequelize");
+require("dotenv").config(); // Load environment variables
 
-let sequelize;
-
-if (process.env.NODE_ENV === 'production') {
-  sequelize = new Sequelize(process.env.DATABASE_URL, {
-    dialect: 'postgres',
+// Initialize Sequelize with DATABASE_URL from environment
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: "postgres",
+    logging: false, // Disable logging in production
     dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false
-      }
-    },
-    logging: false,
-  });
-} else {
-  sequelize = new Sequelize(
-    config.development.database,
-    config.development.username,
-    config.development.password,
-    {
-      host: config.development.host,
-      dialect: 'postgres',
-      logging: false,
+        ssl: {
+            require: true, // Required for cloud databases like Render
+            rejectUnauthorized: false // Prevents SSL certificate validation errors
+        }
     }
-  );
-}
+});
+
+// Test Connection
+sequelize.authenticate()
+    .then(() => console.log("✅ Database connected successfully"))
+    .catch((err) => console.error("❌ Database connection failed:", err));
 
 module.exports = sequelize;
