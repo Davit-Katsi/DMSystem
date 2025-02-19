@@ -3,14 +3,13 @@ const User = require("./user");
 const DriverProfile = require("./driverProfile");
 const Vehicle = require("./vehicle");
 
-// Define Associations AFTER Importing Models
+// 🚀 Define Associations HERE to avoid circular dependencies
 DriverProfile.hasOne(Vehicle, { foreignKey: "driverProfileId", as: "vehicle", onDelete: "CASCADE" });
 Vehicle.belongsTo(DriverProfile, { foreignKey: "driverProfileId", as: "driverProfile" });
 
-// Sync models with database
 sequelize.sync({ alter: true })
-  .then(() => console.log("Database schema updated successfully."))
-  .catch(err => console.error("Error updating schema:", err));
+  .then(() => console.log("✅ Database schema updated successfully"))
+  .catch(err => console.error("❌ Error updating schema:", err));
 
 module.exports = {
   sequelize,

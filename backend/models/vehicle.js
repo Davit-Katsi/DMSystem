@@ -1,7 +1,6 @@
 const { DataTypes, Model } = require("sequelize");
-const sequelize = require("./db"); // Correct Sequelize import
+const sequelize = require("./db");
 
-// Define Vehicle Model FIRST
 class Vehicle extends Model {}
 
 Vehicle.init({
@@ -22,11 +21,5 @@ Vehicle.init({
     tableName: "Vehicles",
     timestamps: true
 });
-
-// Import DriverProfile AFTER defining Vehicle
-const DriverProfile = require("./driverProfile");
-
-// Define Association AFTER Model is Defined
-Vehicle.belongsTo(DriverProfile, { foreignKey: "driverProfileId", as: "driverProfile" });
 
 module.exports = Vehicle;
