@@ -13,7 +13,7 @@ const Login = () => {
   const handleLogin = async () => {
     setErrorMessage('');  // Clear previous errors
     try {
-      const response = await axios.post('http://https://driver-management-backend-3chl.onrender.com/api/auth/login', { email, password });
+      const response = await axios.post('https://driver-management-backend-3chl.onrender.com/api/auth/login', { email, password });
 
       const token = response.data.token;
       const userPayload = JSON.parse(atob(token.split('.')[1]));

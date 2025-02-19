@@ -13,7 +13,7 @@ const ResetPassword = () => {
 
   const handleResetPassword = async () => {
     try {
-      const response = await axios.post('http://https://driver-management-backend-3chl.onrender.com/api/users/reset-password', { token, newPassword });
+      const response = await axios.post('https://driver-management-backend-3chl.onrender.com/api/users/reset-password', { token, newPassword });
       setMessage(response.data.message);
       setError('');
       setTimeout(() => navigate('/login'), 3000);  // Redirect to login after 3 seconds

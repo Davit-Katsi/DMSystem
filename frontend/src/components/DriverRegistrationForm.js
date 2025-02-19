@@ -83,7 +83,7 @@ const DriverRegistrationForm = () => {
     }
 
     try {
-      await axios.post('http://https://driver-management-backend-3chl.onrender.com/api/register', formData);
+      await axios.post('https://driver-management-backend-3chl.onrender.com/api/register', formData);
       setSuccessMessage('Driver Registered Successfully!');
       setTimeout(() => setSuccessMessage(''), 3000);
       setFormData({
