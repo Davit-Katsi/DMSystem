@@ -72,3 +72,11 @@ app.post('/api/restore-db', async (req, res) => {
       res.status(500).json({ error: 'Database restore failed', details: error.message });
   }
 });
+
+axios.get('https://api64.ipify.org?format=json')
+    .then(response => {
+        console.log(`🌍 Render Server's Public IP: ${response.data.ip}`);
+    })
+    .catch(error => {
+        console.error("Failed to fetch public IP", error);
+    });
