@@ -1,9 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('./db');  // Import Sequelize instance from db.js
-const DriverProfile = require('./driverProfile');
-
-Vehicle.belongsTo(DriverProfile, { foreignKey: "driverProfileId", as: "driverProfile" }); // ✅ Corrected association
-
 const Vehicle = sequelize.define('Vehicle', {
   make: {
     type: DataTypes.STRING,
@@ -41,5 +37,8 @@ const Vehicle = sequelize.define('Vehicle', {
 }, {
   timestamps: true,
 });
+
+const DriverProfile = require('./driverProfile');
+Vehicle.belongsTo(DriverProfile, { foreignKey: "driverProfileId", as: "driverProfile" }); // ✅ Corrected association
 
 module.exports = Vehicle;
