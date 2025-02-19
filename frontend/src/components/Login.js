@@ -83,7 +83,7 @@ const Login = () => {
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          className="w-full bg-primary text-white py-2 rounded hover:bg-secondary"
         >
           Login
         </button>
@@ -91,7 +91,7 @@ const Login = () => {
 
       {/* Reset Password Link */}
       <div className="mt-4 text-center">
-        <Link to="/request-password-reset" className="text-blue-500 hover:underline">
+        <Link to="/request-password-reset" className="text-primary hover:underline">
           Forgot Password?
         </Link>
       </div>
