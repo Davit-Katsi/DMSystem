@@ -16,11 +16,12 @@ exports.loginUser = async (req, res) => {
     console.log('Stored hashed password:', user.password);
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    console.log('Is password valid?', isPasswordValid);
-
+    
     if (!isPasswordValid) {
+      console.error('Login attempt failed: Incorrect password for user', email);
       return res.status(401).json({ error: 'Incorrect password. Please try again.' });
     }
+
 
     const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.status(200).json({ 
