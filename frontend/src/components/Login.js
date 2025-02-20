@@ -43,7 +43,7 @@ const Login = () => {
         } else if (error.response.status === 401) {
           setErrorMessage('Incorrect password. Please try again.');
         } else {
-          setErrorMessage('An unexpected error occurred. Please try again later.');
+          setErrorMessage(error.response?.data?.error || 'Unexpected error. Please try again later.');
         }
       } else {
         setErrorMessage('Unable to connect to the server. Please check your connection.');
