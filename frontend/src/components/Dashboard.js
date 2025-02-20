@@ -238,7 +238,7 @@ const handleExportToExcel = async () => {
         }));
 
         setDrivers(updatedDrivers);
-        setTotalPages(response.data.totalPages || 1);
+        setTotalPages(response.data.totalPages || 2);
         setCurrentPage(1);
 
     } catch (error) {
