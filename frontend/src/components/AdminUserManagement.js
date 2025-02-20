@@ -63,7 +63,7 @@ const AdminUserManagement = () => {
   };
 
   const handleDeleteUser = async (userId) => {
-    const adminCount = users.filter(user => user.role === 'admin').length;
+    const adminCount = users.reduce((count, user) => (user.role === 'admin' ? count + 1 : count), 0);
     const userToDelete = users.find(user => user.id === userId);
 
     if (userToDelete.role === 'admin' && adminCount === 1) {
