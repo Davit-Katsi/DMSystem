@@ -84,7 +84,7 @@ const Dashboard = () => {
   // Backup: Download driver data as JSON
   const handleDownloadBackup = async () => {
     try {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('authToken'); // ✅ Ensure token is retrieved correctly
         const response = await axios.get('https://driver-management-backend-3chl.onrender.com/api/backup/download', { // ✅ Ensure backend URL is correct
             headers: { Authorization: `Bearer ${token}` },
             responseType: 'blob',
@@ -118,7 +118,7 @@ const Dashboard = () => {
     formData.append("backupFile", file);
 
     try {
-        const token = localStorage.getItem("token");
+        const token = sessionStorage.getItem('authToken'); // ✅ Ensure token is retrieved correctly
         await axios.post("https://driver-management-backend-3chl.onrender.com/api/backup/upload", formData, {
             headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
         });
@@ -136,7 +136,7 @@ const Dashboard = () => {
 // Download driver data Excel
 const handleExportToExcel = async () => {
   try {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem('authToken'); // ✅ Ensure token is retrieved correctly
       const response = await axios.get("https://driver-management-backend-3chl.onrender.com/api/backup/download", {
           headers: { Authorization: `Bearer ${token}` },
           responseType: "json",
@@ -199,7 +199,7 @@ const handleExportToExcel = async () => {
     e.preventDefault();
 
     try {
-        const token = localStorage.getItem("token");
+        const token = sessionStorage.getItem('authToken'); // ✅ Ensure token is retrieved correctly
         let response;
 
         if (searchParams.zipCode?.trim()) {
@@ -258,8 +258,8 @@ const handleExportToExcel = async () => {
     setCurrentPage(pageNumber);
 
     try {
-        const token = localStorage.getItem("token");
-
+        const token = sessionStorage.getItem('authToken'); // ✅ Ensure token is retrieved correctly
+      
         if (isNearestSearch) {
             const response = await axios.get(`https://driver-management-backend-3chl.onrender.com/api/drivers/closest`, {
                 headers: { Authorization: `Bearer ${token}` },
