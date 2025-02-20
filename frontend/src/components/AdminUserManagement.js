@@ -14,7 +14,7 @@ const AdminUserManagement = () => {
 
   const fetchUsers = useCallback(async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('authToken'); // ✅ Ensure token is retrieved correctly
       if (!token) {
         setErrorMessage('Authentication token not found.');
         setTimeout(() => setErrorMessage(''), 5000);
@@ -43,7 +43,7 @@ const AdminUserManagement = () => {
 
   const handleAddUser = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('authToken'); // ✅ Ensure token is retrieved correctly
       await axios.post('https://driver-management-backend-3chl.onrender.com/api/users', newUser, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -73,7 +73,7 @@ const AdminUserManagement = () => {
     }
 
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('authToken'); // ✅ Ensure token is retrieved correctly
       await axios.delete(`https://driver-management-backend-3chl.onrender.com/api/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -98,7 +98,7 @@ const AdminUserManagement = () => {
     }
 
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('authToken'); // ✅ Ensure token is retrieved correctly
       await axios.put(`https://driver-management-backend-3chl.onrender.com/api/users/${editUserId}`, { role: editedRole }, {
         headers: { Authorization: `Bearer ${token}` },
       });
