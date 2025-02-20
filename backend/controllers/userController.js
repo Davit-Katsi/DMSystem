@@ -145,7 +145,8 @@ exports.resetPassword = async (req, res) => {
     }
 
     console.log('Before saving, password should be plain text:', newPassword);
-    user.password = newPassword;
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
     await user.save();
     console.log('After saving, password should be hashed:', user.password);
 
