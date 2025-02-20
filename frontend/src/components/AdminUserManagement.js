@@ -14,7 +14,7 @@ const AdminUserManagement = () => {
 
   const fetchUsers = useCallback(async () => {
     try {
-      const token = sessionStorage.getItem('authToken'); // ✅ Ensure token is retrieved correctly
+      const token = sessionStorage.getItem('authToken') || '';
       if (!token) {
         setErrorMessage('Authentication token not found.');
         setTimeout(() => setErrorMessage(''), 5000);
