@@ -52,7 +52,7 @@ const Dashboard = () => {
 
   const fetchLatestDrivers = async (page = 1) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('authToken'); // ✅ Ensure token is retrieved correctly
       const response = await axios.get(`https://driver-management-backend-3chl.onrender.com/api/drivers/latest?page=${page}&limit=${driversPerPage}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -66,7 +66,7 @@ const Dashboard = () => {
   
   const fetchStats = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('authToken'); // ✅ Ensure token is retrieved correctly
       const response = await axios.get('https://driver-management-backend-3chl.onrender.com/api/drivers/stats', {
         headers: { Authorization: `Bearer ${token}` },
       });
